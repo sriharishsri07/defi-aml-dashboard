@@ -86,6 +86,27 @@
   .rc .hex.hash, .rc .hex.addr { width: auto; }
   .rc .txt { min-width: 0; max-width: none; }
   @media (max-width: 900px) { .v-table .view-table, .v-cards .view-table { display: none !important; } .v-table .view-cards, .v-cards .view-cards { display: grid !important; } .tb { display: none; } .rc-body { grid-template-columns: 1fr; } }
+  details.card { container-type: inline-size; }
+  .oc { border-top: 1px solid var(--line); }
+  .oc-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 20px; }
+  .oc-head { display: none; color: var(--muted); font-size: 11.5px; letter-spacing: .6px; text-transform: uppercase; font-weight: 600; background: #131d38; padding-top: 10px; padding-bottom: 10px; }
+  .oc-item { border-bottom: 1px solid rgba(255,255,255,.045); }
+  .oc-item.chg { background: rgba(79,209,161,.075); box-shadow: inset 3px 0 0 var(--green); }
+  .oc-row.click:hover { background: rgba(255,255,255,.03); }
+  .oc-ch .chev { display: inline-block; vertical-align: middle; }
+  .oc-id { font-weight: 700; min-width: 64px; }
+  .oc-client { flex: 1 1 170px; min-width: 0; }
+  .oc-type { flex: 1 1 120px; min-width: 0; }
+  .oc-up { margin-left: auto; white-space: nowrap; }
+  .oc-by { white-space: normal; }
+  .oc-detail { border-top: 1px solid var(--line); background: rgba(0,0,0,.18); }
+  .oc-detail .dgrid p, .oc-detail .dgrid li { overflow-wrap: anywhere; }
+  @container (min-width: 1280px) {
+    .oc-row { display: grid; grid-template-columns: 22px 104px minmax(120px, 1.3fr) minmax(90px, 1fr) 150px 140px 112px minmax(110px, 1fr) 104px minmax(100px, 1fr) 64px; gap: 12px; align-items: start; }
+    .oc-head { display: grid; align-items: center; }
+    .oc-up { margin-left: 0; }
+  }
+  @container (max-width: 780px) { .dgrid { grid-template-columns: 1fr; } }
   table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; }
   th { position: sticky; top: 0; z-index: 2; text-align: left; font-weight: 600; font-size: 11.5px; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); background: #131d38; padding: 11px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
   td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,.045); vertical-align: top; }
@@ -116,8 +137,6 @@
   .pill i { width: 6px; height: 6px; border-radius: 50%; background: var(--c); display: inline-block; }
   .code { font-family: var(--mono); font-size: 12px; font-weight: 700; color: #fff; background: rgba(155,140,255,.22); border: 1px solid rgba(155,140,255,.4); border-radius: 7px; padding: 2px 8px; }
   .risk { display: flex; align-items: center; gap: 8px; min-width: 90px; }
-  table.outc th, table.outc td { padding-left: 9px; padding-right: 9px; }
-  table.outc td { font-size: 12.5px; }
   .risk .t { height: 7px; flex: 1; border-radius: 99px; background: rgba(255,255,255,.07); overflow: hidden; }
   .risk .t b { display: block; height: 100%; border-radius: 99px; background: var(--c); }
   .risk span { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 26px; text-align: right; }
@@ -289,26 +308,26 @@
   function outcomeTable(t, all) {
     var tx = index(all, 'da_transactions'), ctx = index(all, 'alert_context'), rk = index(all, 'case_risk');
     if (!t.rows.length) return '<div class="empty">No cases yet.</div>';
-    var h = '<div class="scroll" style="max-height:none"><table class="outc"><thead><tr><th></th><th>Transaction</th><th>Client</th><th>Alert type</th><th>Family</th><th>Status</th><th>Severity</th><th>Disposition</th><th>Risk score</th><th>Handled by</th><th>Updated</th></tr></thead><tbody>';
+    var h = '<div class="oc"><div class="oc-row oc-head"><span class="oc-ch"></span><span class="oc-id">Transaction</span><span class="oc-client">Client</span><span class="oc-type">Alert type</span><span class="oc-fam">Family</span><span class="oc-st">Status</span><span class="oc-sev">Severity</span><span class="oc-disp">Disposition</span><span class="oc-risk">Risk score</span><span class="oc-by">Handled by</span><span class="oc-up">Updated</span></div>';
     t.rows.forEach(function (r, i) {
       var v = r.values, id = v.transaction_id, x = tx[id] || {}, c = ctx[id] || {}, k = rk[id] || {};
       var pending = v.status === 'pending';
-      h += '<tr class="click ' + (r.changed ? 'chg' : '') + '" data-detail="d' + i + '">' +
-        '<td><span class="chev"></span></td>' +
-        '<td><b>' + esc(id) + '</b></td>' +
-        '<td>' + esc(x.client_name || '') + '<div class="sub">' + (x.usd_value != null ? '$' + Number(x.usd_value).toLocaleString('en-US') : '') + '</div></td>' +
-        '<td>' + esc((c.alert_type || '').replace(/_/g, ' ')) + '</td>' +
-        '<td>' + (v.family ? cell('family', v.family) : nul()) + '</td>' +
-        '<td>' + cell('status', v.status) + '</td>' +
-        '<td>' + (v.severity ? cell('severity', v.severity) : nul()) + '</td>' +
-        '<td>' + (v.disposition_code ? cell('disposition_code', v.disposition_code) : (v.status === 'escalated' ? '<span class="sub">none · needs judgement</span>' : nul())) + '</td>' +
-        '<td>' + (k.risk_score != null ? cell('risk_score', k.risk_score) : nul()) + '</td>' +
-        '<td class="sub">' + esc(String(v.assigned_agent || (pending ? 'waiting' : '')).replace(/_Agent$/, '').replace(/_/g, ' ')) + '</td>' +
-        '<td class="sub">' + esc(ago(r.updatedAt)) + '</td></tr>';
+      h += '<div class="oc-item ' + (r.changed ? 'chg' : '') + '"><div class="oc-row click" data-detail="d' + i + '">' +
+        '<span class="oc-ch"><span class="chev"></span></span>' +
+        '<span class="oc-id">' + esc(id) + '</span>' +
+        '<span class="oc-client">' + esc(x.client_name || '') + '<div class="sub">' + (x.usd_value != null ? '$' + Number(x.usd_value).toLocaleString('en-US') : '') + '</div></span>' +
+        '<span class="oc-type">' + esc((c.alert_type || '').replace(/_/g, ' ')) + '</span>' +
+        '<span class="oc-fam">' + (v.family ? cell('family', v.family) : nul()) + '</span>' +
+        '<span class="oc-st">' + cell('status', v.status) + '</span>' +
+        '<span class="oc-sev">' + (v.severity ? cell('severity', v.severity) : nul()) + '</span>' +
+        '<span class="oc-disp">' + (v.disposition_code ? cell('disposition_code', v.disposition_code) : (v.status === 'escalated' ? '<span class="sub">none · needs judgement</span>' : nul())) + '</span>' +
+        '<span class="oc-risk">' + (k.risk_score != null ? cell('risk_score', k.risk_score) : nul()) + '</span>' +
+        '<span class="oc-by sub">' + esc(String(v.assigned_agent || (pending ? 'waiting' : '')).replace(/_Agent$/, '').replace(/_/g, ' ')) + '</span>' +
+        '<span class="oc-up sub">' + esc(ago(r.updatedAt)) + '</span></div>';
       var sc = sevColor(v.severity);
       var lines = String(v.checks_performed || '').split('\n').filter(Boolean);
       var qs = String(v.open_questions || '').split(';').map(function (s) { return s.trim(); }).filter(Boolean);
-      h += '<tr class="detail" id="d' + i + '" style="display:none"><td colspan="11"><div class="dgrid">' +
+      h += '<div class="oc-detail" id="d' + i + '" style="display:none"><div class="dgrid">' +
         (v.action_recommendation ? '<div class="action" style="--c:' + color(sc) + '"><h4>Recommended action</h4><p>' + esc(v.action_recommendation) + '</p></div>' : '') +
         '<div><h4>Reasoning</h4><p>' + (v.reasoning ? esc(v.reasoning) : nul()) + '</p>' +
         (qs.length ? '<h4 style="margin-top:14px">Open questions</h4><ul>' + qs.map(function (q) { return '<li>' + esc(q) + '</li>'; }).join('') + '</ul>' : '') +
@@ -316,9 +335,9 @@
         '<div><h4>Checks performed</h4>' + (lines.length ? '<ul>' + lines.map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : nul()) +
         (v.classification_reasoning ? '<h4 style="margin-top:14px">First-line classification</h4><p>' + esc(v.classification_reasoning) + '</p>' : '') +
         (v.reviewed_by || v.reviewer_notes ? '<h4 style="margin-top:14px">Human review</h4><p>' + esc(v.reviewer_notes || '') + '<span class="sub"> ' + esc(v.reviewed_by || '') + (v.human_approval_reference ? ' · ' + esc(v.human_approval_reference) : '') + '</span></p>' : '') +
-        '</div></div></td></tr>';
+        '</div></div></div></div>';
     });
-    return h + '</tbody></table></div>';
+    return h + '</div>';
   }
 
   function card(t, all, opts) {
@@ -373,8 +392,8 @@
   }
 
   document.addEventListener('click', function (e) {
-    var rowEl = e.target.closest('tr[data-detail]');
-    if (rowEl) { var d = document.getElementById(rowEl.getAttribute('data-detail')); var open = d.style.display !== 'none'; d.style.display = open ? 'none' : 'table-row'; var ch = rowEl.querySelector('.chev'); if (ch) ch.style.transform = open ? 'rotate(-45deg)' : 'rotate(45deg)'; return; }
+    var rowEl = e.target.closest('[data-detail]');
+    if (rowEl) { var d = document.getElementById(rowEl.getAttribute('data-detail')); var open = d.style.display !== 'none'; d.style.display = open ? 'none' : (d.tagName === 'TR' ? 'table-row' : 'block'); var ch = rowEl.querySelector('.chev'); if (ch) ch.style.transform = open ? 'rotate(-45deg)' : 'rotate(45deg)'; return; }
     var vb = e.target.closest('[data-view]');
     if (vb) {
       var det = vb.closest('details'), v = vb.getAttribute('data-view'), key = vb.getAttribute('data-key');
