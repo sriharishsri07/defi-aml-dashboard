@@ -35,7 +35,9 @@
   .spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; animation: sp .8s linear infinite; display: none; }
   .loading .spin { display: inline-block; }
   @keyframes sp { to { transform: rotate(360deg); } }
-  .wrap { max-width: 1680px; margin: 0 auto; padding: 24px 28px 80px; display: grid; grid-template-columns: 230px 1fr; gap: 28px; }
+  .wrap { max-width: 1680px; margin: 0 auto; padding: 24px 28px 80px; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 28px; }
+  main { min-width: 0; }
+  html, body { overflow-x: hidden; }
   nav { position: sticky; top: 86px; align-self: start; max-height: calc(100vh - 110px); overflow: auto; }
   nav .grp { color: var(--faint); font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; margin: 18px 10px 6px; }
   nav .grp:first-child { margin-top: 0; }
@@ -64,7 +66,26 @@
   .tkey { font-family: var(--mono); font-size: 11px; color: var(--faint); background: rgba(255,255,255,.04); border-radius: 6px; padding: 2px 7px; }
   .cnt { font-size: 12px; color: var(--muted); background: rgba(255,255,255,.05); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
   .upd { font-size: 11px; font-weight: 700; color: #07261a; background: var(--green); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
-  .scroll { overflow: auto; border-top: 1px solid var(--line); max-height: 560px; }
+  .scroll { overflow: auto; border-top: 1px solid var(--line); max-height: 72vh; max-width: 100%; }
+  details.card { min-width: 0; max-width: 100%; }
+  .tb { display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-top: 1px solid var(--line); }
+  .tb .lbl { color: var(--muted); font-size: 12px; }
+  .seg { display: inline-flex; background: rgba(255,255,255,.05); border-radius: 10px; padding: 3px; }
+  .seg button { border: 0; background: transparent; border-radius: 8px; padding: 5px 12px; font-size: 12.5px; color: var(--muted); }
+  .v-table .seg [data-view="table"], .v-cards .seg [data-view="cards"] { background: var(--panel2); color: var(--text); box-shadow: 0 1px 6px rgba(0,0,0,.3); }
+  .v-cards .view-table, .v-table .view-cards { display: none; }
+  .rc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 430px), 1fr)); gap: 14px; padding: 16px 20px 22px; border-top: 1px solid var(--line); max-height: 78vh; overflow: auto; }
+  .rc { background: rgba(255,255,255,.025); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+  .rc.chg { border-color: rgba(79,209,161,.55); background: rgba(79,209,161,.07); }
+  .rc-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 14px; }
+  .rc-body { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; }
+  .rc-f { min-width: 0; }
+  .rc-f.wide { grid-column: 1 / -1; }
+  .rc-l { font-size: 10.5px; letter-spacing: .7px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+  .rc-v { overflow-wrap: anywhere; font-size: 13px; line-height: 1.5; }
+  .rc .hex.hash, .rc .hex.addr { width: auto; }
+  .rc .txt { min-width: 0; max-width: none; }
+  @media (max-width: 900px) { .v-table .view-table, .v-cards .view-table { display: none !important; } .v-table .view-cards, .v-cards .view-cards { display: grid !important; } .tb { display: none; } .rc-body { grid-template-columns: 1fr; } }
   table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; }
   th { position: sticky; top: 0; z-index: 2; text-align: left; font-weight: 600; font-size: 11.5px; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); background: #131d38; padding: 11px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
   td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,.045); vertical-align: top; }
@@ -94,7 +115,9 @@
   .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; background: color-mix(in srgb, var(--c) 16%, transparent); color: var(--c); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); }
   .pill i { width: 6px; height: 6px; border-radius: 50%; background: var(--c); display: inline-block; }
   .code { font-family: var(--mono); font-size: 12px; font-weight: 700; color: #fff; background: rgba(155,140,255,.22); border: 1px solid rgba(155,140,255,.4); border-radius: 7px; padding: 2px 8px; }
-  .risk { display: flex; align-items: center; gap: 10px; min-width: 150px; }
+  .risk { display: flex; align-items: center; gap: 8px; min-width: 90px; }
+  table.outc th, table.outc td { padding-left: 9px; padding-right: 9px; }
+  table.outc td { font-size: 12.5px; }
   .risk .t { height: 7px; flex: 1; border-radius: 99px; background: rgba(255,255,255,.07); overflow: hidden; }
   .risk .t b { display: block; height: 100%; border-radius: 99px; background: var(--c); }
   .risk span { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 26px; text-align: right; }
@@ -186,7 +209,7 @@
       return '<span class="num">' + s + '</span>';
     }
     var str = String(v);
-    if (/^0x[0-9a-fA-F]{60,}$/.test(str)) return '<span class="hex hash" title="Click to copy" data-copy="' + esc(str) + '">' + esc(str) + '</span>';
+    if (/^(0x)?[0-9a-fA-F]{64}$/.test(str)) return '<span class="hex hash" title="Click to copy" data-copy="' + esc(str) + '">' + esc(str) + '</span>';
     if (/^0x[0-9a-fA-F]{30,}$/.test(str) || (/^(bc1|T[1-9A-HJ-NP-Za-km-z]{30,})/.test(str) && str.length > 30)) return '<span class="hex addr" title="Click to copy" data-copy="' + esc(str) + '">' + esc(str) + '</span>';
     if (/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.]+Z$/.test(str)) return '<span class="sub" style="white-space:nowrap">' + fmtDate(str) + '</span>';
     if (/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(str)) return '<span style="white-space:nowrap">' + esc(str) + '</span>';
@@ -235,15 +258,30 @@
       if (!k) { var sum = 0; for (var i = 0; i < s.length; i++) sum += s.charCodeAt(i); k = TAGC[sum % TAGC.length]; }
       return '<span class="tag" style="--c:' + color(k) + '">' + esc(s) + '</span>';
     }
-    var h = '<div class="scroll"><table><thead><tr>' + cols.map(function (c) { return '<th class="' + (numeric[c] ? 'r' : '') + '">' + esc(label(c)) + '</th>'; }).join('') + '<th>Updated</th></tr></thead><tbody>';
+    function inner(c, v, r) { return (tagged[c] && typeof v === 'string' && v !== '') ? tagFor(c, v) : cell(c, v, r); }
+    // Table view
+    var h = '<div class="view-table"><div class="scroll"><table><thead><tr>' + cols.map(function (c) { return '<th class="' + (numeric[c] ? 'r' : '') + '">' + esc(label(c)) + '</th>'; }).join('') + '<th>Updated</th></tr></thead><tbody>';
     t.rows.forEach(function (r) {
       h += '<tr class="' + (r.changed ? 'chg' : '') + '">' + cols.map(function (c) {
-        var v = r.values[c];
-        var inner = (tagged[c] && typeof v === 'string' && v !== '') ? tagFor(c, v) : cell(c, v, r);
-        return '<td class="' + (numeric[c] ? 'r' : '') + '">' + inner + '</td>';
+        return '<td class="' + (numeric[c] ? 'r' : '') + '">' + inner(c, r.values[c], r) + '</td>';
       }).join('') + '<td class="sub" style="white-space:nowrap">' + esc(ago(r.updatedAt)) + '</td></tr>';
     });
-    return h + '</tbody></table></div>';
+    h += '</tbody></table></div></div>';
+    // Cards view: one card per row, fields in a grid, no sideways scrolling
+    var first = cols[0], rest = cols.slice(1);
+    var g = '<div class="view-cards rc-grid">';
+    t.rows.forEach(function (r) {
+      g += '<div class="rc ' + (r.changed ? 'chg' : '') + '"><div class="rc-h"><span>' + cell(first, r.values[first], r) + '</span><span class="sub">' + esc(ago(r.updatedAt)) + '</span></div><div class="rc-body">';
+      rest.forEach(function (c) {
+        var v = r.values[c];
+        var wide = typeof v === 'string' && (v.length > 48 || /^(0x)?[0-9a-fA-F]{64}$/.test(v));
+        g += '<div class="rc-f' + (wide ? ' wide' : '') + '"><div class="rc-l">' + esc(label(c)) + '</div><div class="rc-v">' + inner(c, v, r) + '</div></div>';
+      });
+      g += '</div></div>';
+    });
+    g += '</div>';
+    var tb = '<div class="tb"><span class="lbl">View</span><div class="seg"><button data-view="cards" data-key="' + esc(t.key) + '">Cards</button><button data-view="table" data-key="' + esc(t.key) + '">Table</button></div></div>';
+    return tb + h + g;
   }
 
   function index(tables, key) { var m = {}; var t = tables.filter(function (x) { return x.key === key; })[0]; (t ? t.rows : []).forEach(function (r) { m[r.values.transaction_id] = r.values; }); return m; }
@@ -251,7 +289,7 @@
   function outcomeTable(t, all) {
     var tx = index(all, 'da_transactions'), ctx = index(all, 'alert_context'), rk = index(all, 'case_risk');
     if (!t.rows.length) return '<div class="empty">No cases yet.</div>';
-    var h = '<div class="scroll" style="max-height:none"><table><thead><tr><th></th><th>Transaction</th><th>Client</th><th>Alert type</th><th>Family</th><th>Status</th><th>Severity</th><th>Disposition</th><th>Risk score</th><th>Handled by</th><th>Updated</th></tr></thead><tbody>';
+    var h = '<div class="scroll" style="max-height:none"><table class="outc"><thead><tr><th></th><th>Transaction</th><th>Client</th><th>Alert type</th><th>Family</th><th>Status</th><th>Severity</th><th>Disposition</th><th>Risk score</th><th>Handled by</th><th>Updated</th></tr></thead><tbody>';
     t.rows.forEach(function (r, i) {
       var v = r.values, id = v.transaction_id, x = tx[id] || {}, c = ctx[id] || {}, k = rk[id] || {};
       var pending = v.status === 'pending';
@@ -265,7 +303,7 @@
         '<td>' + (v.severity ? cell('severity', v.severity) : nul()) + '</td>' +
         '<td>' + (v.disposition_code ? cell('disposition_code', v.disposition_code) : (v.status === 'escalated' ? '<span class="sub">none · needs judgement</span>' : nul())) + '</td>' +
         '<td>' + (k.risk_score != null ? cell('risk_score', k.risk_score) : nul()) + '</td>' +
-        '<td class="sub">' + esc(v.assigned_agent || (pending ? 'waiting' : '')) + '</td>' +
+        '<td class="sub">' + esc(String(v.assigned_agent || (pending ? 'waiting' : '')).replace(/_Agent$/, '').replace(/_/g, ' ')) + '</td>' +
         '<td class="sub">' + esc(ago(r.updatedAt)) + '</td></tr>';
       var sc = sevColor(v.severity);
       var lines = String(v.checks_performed || '').split('\n').filter(Boolean);
@@ -286,7 +324,9 @@
   function card(t, all, opts) {
     opts = opts || {};
     var body = t.key === 'alert_cases' ? outcomeTable(t, all) : genericTable(t);
-    return '<details class="card" id="t-' + t.key + '" ' + (opts.closed ? '' : 'open') + '><summary><span class="chev"></span><div class="ct"><h3>' + esc(t.title) + ' <span class="tkey">' + esc(t.key) + '</span></h3><p>' + esc(t.description) + '</p></div>' +
+    var views = {}; try { views = JSON.parse(localStorage.getItem('abl-da-views') || '{}'); } catch (e) { views = {}; }
+    var view = t.key === 'alert_cases' ? 'table' : (views[t.key] || ((t.columns || []).length > 6 ? 'cards' : 'table'));
+    return '<details class="card v-' + view + '" id="t-' + t.key + '" ' + (opts.closed ? '' : 'open') + '><summary><span class="chev"></span><div class="ct"><h3>' + esc(t.title) + ' <span class="tkey">' + esc(t.key) + '</span></h3><p>' + esc(t.description) + '</p></div>' +
       (t.changed ? '<span class="upd">' + t.changed + ' updated</span>' : '') + '<span class="cnt">' + t.rows.length + (t.rows.length === 1 ? ' row' : ' rows') + '</span></summary>' + body + '</details>';
   }
 
@@ -335,6 +375,13 @@
   document.addEventListener('click', function (e) {
     var rowEl = e.target.closest('tr[data-detail]');
     if (rowEl) { var d = document.getElementById(rowEl.getAttribute('data-detail')); var open = d.style.display !== 'none'; d.style.display = open ? 'none' : 'table-row'; var ch = rowEl.querySelector('.chev'); if (ch) ch.style.transform = open ? 'rotate(-45deg)' : 'rotate(45deg)'; return; }
+    var vb = e.target.closest('[data-view]');
+    if (vb) {
+      var det = vb.closest('details'), v = vb.getAttribute('data-view'), key = vb.getAttribute('data-key');
+      det.classList.remove('v-cards', 'v-table'); det.classList.add('v-' + v);
+      try { var vs = JSON.parse(localStorage.getItem('abl-da-views') || '{}'); vs[key] = v; localStorage.setItem('abl-da-views', JSON.stringify(vs)); } catch (err) {}
+      return;
+    }
     var cl = e.target.closest('[data-clamp]'); if (cl) { cl.classList.toggle('open'); return; }
     var cp = e.target.closest('[data-copy]'); if (cp && navigator.clipboard) { navigator.clipboard.writeText(cp.getAttribute('data-copy')); cp.style.color = 'var(--green)'; setTimeout(function () { cp.style.color = ''; }, 700); }
   });
